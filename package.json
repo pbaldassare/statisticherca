@@ -1,0 +1,13 @@
+{
+  "name": "statisticherca",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "ingest": "node src/ingest.js",
+    "backfill": "node src/ingest.js --backfill"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
+  }
+}
