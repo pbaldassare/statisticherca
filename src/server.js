@@ -2,7 +2,7 @@ import { createServer } from 'node:http'
 import { readFile } from 'node:fs/promises'
 import { extname, join, normalize } from 'node:path'
 import { readFileSync, existsSync } from 'node:fs'
-import { filtersFromSearch, loadDashboard, loadMeta } from './stats.js'
+import { loadDashboard, loadMeta, resolveFilters } from './stats.js'
 
 loadEnv()
 
@@ -51,15 +51,6 @@ server.listen(port, () => {
   console.log(`Statistiche RCA su http://localhost:${port}`)
 })
 
-async function resolveFilters(searchParams) {
-  const requested = filtersFromSearch(searchParams)
-  if (requested.from && requested.to) return requested
-  const meta = await loadMeta()
-  const to = meta.max_date || romeToday()
-  const from = meta.min_date || addDays(to, -30)
-  return { ...requested, from, to }
-}
-
 function safeFile(pathname) {
   const requested = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '')
   if (requested.includes('..')) {
@@ -79,22 +70,6 @@ function safeFile(pathname) {
 function sendJson(response, body, status = 200) {
   response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' })
   response.end(JSON.stringify(body))
-}
-
-function romeToday() {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Europe/Rome',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date())
-}
-
-function addDays(iso, days) {
-  const [year, month, day] = iso.split('-').map(Number)
-  const date = new Date(Date.UTC(year, month - 1, day))
-  date.setUTCDate(date.getUTCDate() + days)
-  return date.toISOString().slice(0, 10)
 }
 
 function loadEnv() {

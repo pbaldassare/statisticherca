@@ -26,6 +26,15 @@ export async function loadMeta() {
   return rows[0] || { min_date: null, max_date: null }
 }
 
+export async function resolveFilters(searchParams) {
+  const requested = filtersFromSearch(searchParams)
+  if (requested.from && requested.to) return requested
+  const meta = await loadMeta()
+  const to = meta.max_date || romeToday()
+  const from = meta.min_date || addDays(to, -30)
+  return { ...requested, from, to }
+}
+
 export async function loadDashboard(filters) {
   const { from, to, veicolo, persona, eta, cu, provincia } = filters
   const rows = await query(`
@@ -42,6 +51,22 @@ export async function loadDashboard(filters) {
   const value = rows[0]?.dashboard
   if (typeof value === 'string') return JSON.parse(value)
   return value
+}
+
+function romeToday() {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Rome',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date())
+}
+
+function addDays(iso, days) {
+  const [year, month, day] = iso.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1, day))
+  date.setUTCDate(date.getUTCDate() + days)
+  return date.toISOString().slice(0, 10)
 }
 
 function isoOrNull(value) {

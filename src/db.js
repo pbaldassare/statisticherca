@@ -10,6 +10,24 @@ const projectRef = 'uanazxrxtzcuircypklo'
 
 let pool = null
 
+function onWorker() {
+  return typeof navigator !== 'undefined' && navigator.userAgent === 'Cloudflare-Workers'
+}
+
+async function queryOnce(sql) {
+  const client = new pg.Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_URL.includes('localhost') ? undefined : { rejectUnauthorized: false },
+  })
+  await client.connect()
+  try {
+    const result = await client.query(sql)
+    return result.rows
+  } finally {
+    await client.end()
+  }
+}
+
 function getPool() {
   if (!process.env.DATABASE_URL) return null
   if (!pool) {
@@ -23,10 +41,16 @@ function getPool() {
 }
 
 export async function query(sql, { timeout = 180_000 } = {}) {
+  if (process.env.DATABASE_URL && onWorker()) {
+    return queryOnce(sql)
+  }
   const activePool = getPool()
   if (activePool) {
     const result = await activePool.query(sql)
     return result.rows
+  }
+  if (onWorker()) {
+    throw new Error('DATABASE_URL non configurato')
   }
 
   const dir = mkdtempSync(join(tmpdir(), 'rca-stats-'))
