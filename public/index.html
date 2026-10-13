@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000734" />
-    <title>Statistiche RCA</title>
+    <meta name="theme-color" content="#0C4A6E" />
+    <title>Prezzi RCA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
@@ -16,8 +16,8 @@
         <div class="brand">
           <span class="brand-mark" aria-hidden="true">R</span>
           <span>
-            <strong>Statistiche RCA</strong>
-            <small>Preventivi anonimi</small>
+            <strong>Prezzi RCA</strong>
+            <small>Chi conviene, e dove</small>
           </span>
         </div>
         <nav class="side-nav" aria-label="Sezioni"></nav>
@@ -27,26 +27,55 @@
         <header class="topbar">
           <div>
             <p class="eyebrow">Assicurapp</p>
-            <h1 id="page-title">Panoramica</h1>
+            <h1 id="page-title">Migliore compagnia</h1>
+            <p id="page-lead" class="lead">Il prezzo è sempre annuo.</p>
           </div>
-          <form id="filters" class="filters">
-            <label>Dal <input type="date" name="from" required /></label>
-            <label>Al <input type="date" name="to" required /></label>
-            <label>Veicolo
-              <select name="veicolo">
-                <option value="tutti">Tutti</option>
-                <option value="rca_auto">Auto</option>
-                <option value="rca_moto">Moto</option>
-                <option value="rca_autocarri">Autocarri</option>
-              </select>
-            </label>
-            <button type="submit">Aggiorna</button>
-          </form>
         </header>
-        <main id="content" class="content"></main>
+        <form id="filters" class="filters">
+          <label>Dal <input type="date" name="from" required /></label>
+          <label>Al <input type="date" name="to" required /></label>
+          <label>Veicolo
+            <select name="veicolo">
+              <option value="tutti">Tutti</option>
+              <option value="rca_auto">Auto</option>
+              <option value="rca_moto">Moto</option>
+              <option value="rca_autocarri">Autocarri</option>
+            </select>
+          </label>
+          <label>Persona
+            <select name="persona">
+              <option value="tutti">Tutte</option>
+              <option value="privato">Privato</option>
+              <option value="azienda">Azienda</option>
+            </select>
+          </label>
+          <label>Età
+            <select name="eta">
+              <option value="tutte">Tutte</option>
+              <option value="18-25">18-25</option>
+              <option value="26-35">26-35</option>
+              <option value="36-45">36-45</option>
+              <option value="46-55">46-55</option>
+              <option value="56-65">56-65</option>
+              <option value="66+">66+</option>
+            </select>
+          </label>
+          <label>Classe di merito
+            <select name="cu" data-all="tutte">
+              <option value="tutte">Tutte</option>
+            </select>
+          </label>
+          <label>Zona
+            <select name="provincia" data-all="tutte">
+              <option value="tutte">Tutte</option>
+            </select>
+          </label>
+          <button type="submit">Mostra i prezzi</button>
+        </form>
+        <main id="content" class="content" aria-live="polite"></main>
       </div>
     </div>
     <nav class="bottom-nav" aria-label="Sezioni"></nav>
-    <script type="module" src="/app.js"></script>
+    <script type="module" src="/app.js?v=4"></script>
   </body>
 </html>

@@ -57,7 +57,7 @@ async function resolveFilters(searchParams) {
   const meta = await loadMeta()
   const to = meta.max_date || romeToday()
   const from = meta.min_date || addDays(to, -30)
-  return { from, to, veicolo: requested.veicolo }
+  return { ...requested, from, to }
 }
 
 function safeFile(pathname) {

@@ -4,7 +4,6 @@ import pg from 'pg'
 
 const VEICOLI = new Set(['rca_auto', 'rca_moto', 'rca_autocarri'])
 const TIPI = new Set(['privato', 'azienda'])
-const FRAZIONAMENTI = new Set([0, 1, 2])
 
 loadEnv()
 
@@ -19,8 +18,9 @@ if (!token) {
   process.exit(1)
 }
 if (!databaseUrl) {
-  console.error('Manca DATABASE_URL nel file .env')
-  process.exit(1)
+  const { runLoad } = await import('./load-sql.js')
+  await runLoad({ baseUrl, token, args })
+  process.exit(0)
 }
 
 const client = new pg.Client({
@@ -197,19 +197,17 @@ function normalizeQuote(date, row) {
     provincia: row.provincia || null,
     cu: row.cu === null || row.cu === undefined ? null : String(row.cu),
     tipologia_rca: row.tipologia_rca || null,
-    quotazioni: quotazioni.map((item) => {
+    quotazioni: quotazioni.flatMap((item) => {
       const frazionamento = Number(item.frazionamento)
-      if (!FRAZIONAMENTI.has(frazionamento)) {
-        throw Object.assign(new Error(`${date} frazionamento non previsto: ${item.frazionamento}`), { fatal: true })
-      }
+      if (!Number.isInteger(frazionamento) || frazionamento < 0 || frazionamento > 2) return []
       if (!item.compagnia) {
         throw Object.assign(new Error(`${date} quotazione senza compagnia`), { fatal: true })
       }
-      return {
+      return [{
         compagnia: String(item.compagnia),
         premio_rca: item.premio_rca,
         frazionamento,
-      }
+      }]
     }),
   }
 }
