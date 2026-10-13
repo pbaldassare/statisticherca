@@ -2,6 +2,7 @@ import { createServer } from 'node:http'
 import { readFile } from 'node:fs/promises'
 import { extname, join, normalize } from 'node:path'
 import { readFileSync, existsSync } from 'node:fs'
+import { query } from './db.js'
 import { loadDashboard, loadMeta, resolveFilters } from './stats.js'
 
 loadEnv()
@@ -20,11 +21,11 @@ const server = createServer(async (request, response) => {
   console.log(request.method, url.pathname)
   try {
     if (url.pathname === '/api/meta') {
-      return sendJson(response, await loadMeta())
+      return sendJson(response, await loadMeta(query))
     }
     if (url.pathname === '/api/dashboard') {
-      const filters = await resolveFilters(url.searchParams)
-      const dashboard = await loadDashboard(filters)
+      const filters = await resolveFilters(url.searchParams, query)
+      const dashboard = await loadDashboard(filters, query)
       return sendJson(response, { filters, ...dashboard })
     }
     if (request.method !== 'GET' && request.method !== 'HEAD') {

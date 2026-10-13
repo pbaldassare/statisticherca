@@ -3,16 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node --check src/worker.js",
-    "deploy": "wrangler deploy",
+    "build": "node scripts/copy-public.js",
     "start": "node src/server.js",
     "ingest": "node src/ingest.js",
     "backfill": "node src/ingest.js --backfill"
   },
   "dependencies": {
     "pg": "^8.16.3"
-  },
-  "devDependencies": {
-    "wrangler": "^4.149.0"
   }
 }

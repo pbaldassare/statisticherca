@@ -1,5 +1,3 @@
-import { query } from './db.js'
-
 const VEICOLI = new Set(['tutti', 'rca_auto', 'rca_moto', 'rca_autocarri'])
 const PERSONE = new Set(['tutti', 'privato', 'azienda', 'n.d.'])
 const ETA = new Set(['tutte', '18-25', '26-35', '36-45', '46-55', '56-65', '66+', 'n.d.'])
@@ -16,7 +14,7 @@ export function filtersFromSearch(searchParams) {
   }
 }
 
-export async function loadMeta() {
+export async function loadMeta(query) {
   const rows = await query(`
     select
       min(requested_date)::text as min_date,
@@ -26,16 +24,16 @@ export async function loadMeta() {
   return rows[0] || { min_date: null, max_date: null }
 }
 
-export async function resolveFilters(searchParams) {
+export async function resolveFilters(searchParams, query) {
   const requested = filtersFromSearch(searchParams)
   if (requested.from && requested.to) return requested
-  const meta = await loadMeta()
+  const meta = await loadMeta(query)
   const to = meta.max_date || romeToday()
   const from = meta.min_date || addDays(to, -30)
   return { ...requested, from, to }
 }
 
-export async function loadDashboard(filters) {
+export async function loadDashboard(filters, query) {
   const { from, to, veicolo, persona, eta, cu, provincia } = filters
   const rows = await query(`
     select rca_stats.dashboard(
