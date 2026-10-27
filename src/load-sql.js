@@ -1,6 +1,6 @@
 import { query } from './db.js'
 
-const VEICOLI = new Set(['rca_auto', 'rca_moto', 'rca_autocarri'])
+const VEICOLI = new Set(['rca_auto', 'rca_moto', 'rca_autocarri', 'rca_ciclomotori'])
 const TIPI = new Set(['privato', 'azienda'])
 
 export async function runLoad({ baseUrl, token, args }) {

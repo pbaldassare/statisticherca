@@ -2,7 +2,7 @@ import { readFileSync, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 import pg from 'pg'
 
-const VEICOLI = new Set(['rca_auto', 'rca_moto', 'rca_autocarri'])
+const VEICOLI = new Set(['rca_auto', 'rca_moto', 'rca_autocarri', 'rca_ciclomotori'])
 const TIPI = new Set(['privato', 'azienda'])
 
 loadEnv()

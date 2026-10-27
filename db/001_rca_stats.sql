@@ -28,7 +28,7 @@ create table if not exists rca_stats.quotes (
   ingest_run_id bigint not null references rca_stats.ingest_runs (id),
   requested_date date not null,
   data_preventivo timestamp without time zone,
-  veicolo text not null check (veicolo in ('rca_auto', 'rca_moto', 'rca_autocarri')),
+  veicolo text not null check (veicolo in ('rca_auto', 'rca_moto', 'rca_autocarri', 'rca_ciclomotori')),
   tipo_contraente text check (tipo_contraente in ('privato', 'azienda')),
   eta smallint check (eta is null or (eta >= 0 and eta <= 120)),
   straniero boolean,

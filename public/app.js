@@ -351,7 +351,7 @@ function fillSelect(select, values, name, current, allValue, allLabel) {
 
 function filterSentence() {
   const filters = dashboard.filters
-  const vehicles = { rca_auto: 'Auto', rca_moto: 'Moto', rca_autocarri: 'Autocarri' }
+  const vehicles = { rca_auto: 'Auto', rca_moto: 'Moto', rca_autocarri: 'Autocarri', rca_ciclomotori: 'Ciclomotori' }
   const bits = []
   if (filters.veicolo !== 'tutti') bits.push(vehicles[filters.veicolo] || filters.veicolo)
   if (filters.persona !== 'tutti') bits.push(personLabel(filters.persona))

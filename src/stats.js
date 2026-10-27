@@ -1,4 +1,4 @@
-const VEICOLI = new Set(['tutti', 'rca_auto', 'rca_moto', 'rca_autocarri'])
+const VEICOLI = new Set(['tutti', 'rca_auto', 'rca_moto', 'rca_autocarri', 'rca_ciclomotori'])
 const PERSONE = new Set(['tutti', 'privato', 'azienda', 'n.d.'])
 const ETA = new Set(['tutte', '18-25', '26-35', '36-45', '46-55', '56-65', '66+', 'n.d.'])
 
