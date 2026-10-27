@@ -1,0 +1,49 @@
+name: Scarico giornaliero RCA
+
+on:
+  schedule:
+    # 06:00 UTC: mattina in Italia, scarica il giorno precedente.
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      from:
+        description: 'Dal (YYYY-MM-DD). Vuoto = solo ieri'
+        required: false
+        type: string
+      to:
+        description: 'Al (YYYY-MM-DD)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Scarica i preventivi
+        env:
+          RCA_BASE_URL: https://api.assicurapp.it
+          RCA_STATS_TOKEN: ${{ secrets.RCA_STATS_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          INGEST_FROM: ${{ inputs.from }}
+          INGEST_TO: ${{ inputs.to }}
+        run: |
+          test -n "$RCA_STATS_TOKEN"
+          test -n "$DATABASE_URL"
+          if [ -n "$INGEST_FROM" ]; then
+            args=(--from "$INGEST_FROM")
+            if [ -n "$INGEST_TO" ]; then
+              args+=(--to "$INGEST_TO")
+            fi
+            npm run ingest -- "${args[@]}"
+          else
+            npm run ingest
+          fi
